@@ -1,0 +1,202 @@
+{% load static%}
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link
+    href="https://fonts.googleapis.com/css?family=Mansalva|Merienda|Pacifico|Satisfy|Grenze|Vibes|Open+Sans&display=swap"
+    rel="stylesheet">
+  <meta charset="utf-8">
+  <!-- <title>Website</title> -->
+  <style>
+    #img1 {
+      width: 100px;
+      height: 80px;
+      padding: 5px;
+      margin-top: -10px;
+      margin-left: -10px;
+    }
+    ul li {
+      padding-left: 20px;
+      padding-top: 2px;
+      padding-bottom: 8px;
+      padding-right: 20px;
+
+    }
+    #p1 {
+      color: #6b249b;
+      font-size: 15px;
+      font-weight: bold;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    #p2 {
+      color: #6b249b;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Times New Roman', Times, serif;
+      margin-left: 407px;
+    }
+  </style>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    .boxed {
+      border: 1px solid black;
+      height: 25px;
+      width: 25px;
+    }
+
+    #oh {
+      width: 125px;
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 20px;
+      background-color: #6b249b;
+      color: gray;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="font-family: 'Open Sans', sans-serif;">
+    <a href="{% url 'home' %}"><img id="img1" src="{% static 'tryapp/img/logo.jpeg' %}" alt="cebs"></a>
+
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" id="p1" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="p1" href="{% url 'profile' %}">Profile</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'cart' %}" id="p1">Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
+        </li>
+
+        <li class="nav-item" >
+          <a class="nav-link" href="{% url 'contact' %}" id="p1">Contact Us</a>
+        </li> 
+        <li class="nav-item" >
+          <a class="nav-link" id="p2">
+            Hello!&nbsp;{{user.username}}</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" id="p1" href="{% url 'logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <br>
+  <div class="container" style="font-family: 'Open Sans', sans-serif;">
+    <h2>Shopping Bag</h2>
+    <div class="well well-small">
+      <hr class="soften" />
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Qty </th>
+            <!--        <th>Total</th>-->
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Clothes</td>
+            <td>4JSTAR Women's Ruffle Moti Stone Anarkali Maxi Gown</td>
+            <td>Rs. 659</td>
+            <td>
+              <div class="boxed">&nbsp;1
+
+              </div>
+
+              <!--<div class="input-append">
+                <button class="btn btn-mini" type="button">-</button>
+
+                <button class="btn btn-mini" type="button">+</button>
+                <button class="btn btn-mini btn-danger" type="button">Remove</button>
+                            <span class="icon-remove"></span>
+              </div>-->
+            </td>
+            <!--       <td>Rs. {{total}}-->
+            <!--        <div>-->
+            <!--          <button (click)="checkOut()">Pay</button>-->
+            <!--        </div>-->
+            <!--        </td>-->
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <a href="{% url 'shipping'%}"><button type="button" class="btn btn-md" style="color: white;margin-top:-10px; background-color:#6b249b;">Checkout</button></a>
+
+        <!-- <button type="button" class="btn btn-md" id="checkout-button" style="color: white;margin-top:-10px; background-color:#6b249b;">Pay Online</button> -->
+        &nbsp;&nbsp;&nbsp;
+
+      </div>
+    </div>
+  </div>
+
+  {% csrf_token %}
+</body>
+<script type="text/javascript">
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  // Create an instance of the Stripe object with your publishable API key
+  var stripe = Stripe("pk_test_51IrKiWSD2MVKC9ogYQR4jUcnobRdFLSGX6Lt7zVUcInmAYdrqtHuxIYD3KpGZ7PMGPG5SJL6jz67Nieyv1ISBrYw00uAxTPSYZ");
+  var checkoutButton = document.getElementById("checkout-button");
+  
+  checkoutButton.addEventListener("click", function () {
+    fetch("{% url 'create-checkout-session' product.id %}", {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrftoken
+      }
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (session) {
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function (result) {
+        // If redirectToCheckout fails due to a browser or network
+        // error, you should display the localized error message to your
+        // customer using error.message.
+        if (result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function (error) {
+        console.error("Error:", error);
+      });
+  });
+</script>
+<div class="footer">© 2021 </span><span style="color: white; "> CEBSShopping.com</span></div>
+
+
+</html>
