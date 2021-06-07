@@ -61,12 +61,12 @@
 
     .form-area {
       position: absolute;
-      top: 38%;
+      top: 36%;
       left: 50%;
       background-color: white;
       transform: translate(-50%, -50%);
       width: 500px;
-      height: 600px;
+      height: 650px;
       box-sizing: border-box;
       background-color: #f5f5f0;
       /* background: rgba(0, 0, 0, 0.5); */
@@ -163,22 +163,22 @@
 
 
       <div>
-        <a href="{% url 'login' %}" style="color: #6b249b;">Already have an account?
+        <a href="{% url 'login' %}" style="color: #6b249b;">Already have an account? Login
         </a>
         
     </div>
 
     </form>
-    <div style="color: white;"> {{form.errors}} </div>
+    <div style="color: white;"> {{registeration_form.errors}} </div>
   </div>
   
   <script>
     var form_fields = document.getElementsByTagName('input')
-    form_fields[1].placeholder = 'Enter email';
-    form_fields[2].placeholder = 'Enter username';
-    form_fields[3].placeholder = 'Enter password';
+    form_fields[1].placeholder = 'example@gmail.com';
+    form_fields[2].placeholder = 'user123';
+    form_fields[3].placeholder = 'At least 8 different character';
     form_fields[4].placeholder = 'Re-enter Password';
-    form_fields[5].placeholder = 'Enter Contact number';
+    form_fields[5].placeholder = 'xxxxx00000';
 
 
     for (var field in form_fields) {

@@ -43,7 +43,7 @@
       font-size: 18px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
-      margin-left: 407px;
+      margin-left: 398px;
     }
     .footer {
    position: fixed;
@@ -54,7 +54,28 @@
    background-color:#6b249b;
    color: gray;
    text-align: center;
-}
+    }
+   .form-area p {
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+      color: #6b249b;
+    }
+
+
+    .form-area input[type=text],
+    .form-area input[type=number],
+    .form-area input[type=username],
+    .form-area input[type=email],
+    .form-area input[type=password] {
+      border: none;
+      border-bottom: 1px solid #6b249b;
+      background-color: white;
+      outline: none;
+      height: 40px;
+      color: #6b249b;
+    }
+
   </style>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -112,7 +133,7 @@
               alt="Profile Picture" style="border-radius:100px;margin-left: 1px;">
 
           </div>
-          <form method="POST">
+          <form method="POST" class="form-area">
             {% csrf_token %}
 
             <p>

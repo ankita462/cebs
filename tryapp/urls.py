@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from .views import *
+from django.conf.urls import url
+
 
 
 urlpatterns=[
@@ -27,7 +29,9 @@ urlpatterns=[
     path('book/',views.books,name='book'),
     path('shoes/',views.shoes,name='shoes'),
     path('signup/login/viewproduct/',views.viewproduct,name='view'),
-    path('viewdesc/<id>',views.viewdesc,name='viewdesc'),
+    path('viewdesc/<id>',views.product_detail,name='product_detail'),
+    # path('cart/',views.usercart,name='cart'),
+    # path('cart/<id>',views.usercarttt,name='ucart'),
     path('orderhistory',views.orderhistory,name='orderhistory'),
     path('shipping',views.shipping,name='shipping'),
     path('contact/',views.contact,name='contact'),
@@ -39,4 +43,12 @@ urlpatterns=[
     path('vbook/',views.vbooks,name='vbook'),
     path('vshoes/',views.vshoes,name='vshoes'),
     path('orders/',views.vieworder,name='order'),
+    # url(r'^$', views.cart_detail, name='cart_detail'),
+    # url(r'^add/(?P<product_id>\d+)/$', views.cart_add, name='cart_add'),
+    path('add/<id>',views.cart_add,name='cart_add'),
+    path('usercart/',views.cart_detail,name='cart_detail'),
+    path('remove/<id>',views.cart_remove,name='cart_remove'),
+    path('pd/<id>', views.product_detail, name='product_detail'),
+    # url(r'^(?P<id>\d+)/(?P<slug>[-\w]+)/$', views.product_detail, name='product_detail'),
+    # url(r'^remove/(?P<product_id>\d+)/$', views.cart_remove, name='cart_remove'),
 ]

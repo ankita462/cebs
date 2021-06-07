@@ -126,4 +126,15 @@ class Order(models.Model):
     class Meta:
         db_table="orders"
 
+class Cart(models.Model):
+    productname = models.CharField(max_length=100)
+    username=models.CharField(max_length=100)
+    quantity = models.IntegerField(default=1)
+    price = models.IntegerField()
+    total=models.IntegerField()
+    date = models.DateField(default=datetime.datetime.today)
+
+    class Meta:
+        db_table="usercart"
+
 

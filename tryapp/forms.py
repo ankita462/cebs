@@ -84,12 +84,16 @@ class UpdateProfileForm(forms.ModelForm):
                 return phone_no
             raise forms.ValidationError('Phone number "%s" is already in use, Please enter a different phone number' % phone_no)
 
-class CheckoutForm(forms.Form):
-    # first_name = forms.CharField(max_length=255)
-    # last_name = forms.CharField(max_length=255)
-    email = forms.EmailField(max_length=255)
-    phone = forms.CharField(max_length=255)
-    address = forms.CharField(max_length=255)
-    zipcode = forms.CharField(max_length=255)
-    place = forms.CharField(max_length=255)
-    stripe_token = forms.CharField(max_length=255)
+
+
+
+
+
+
+
+PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 26)]
+
+
+class CartAddProductForm(forms.Form):
+    quantity = forms.TypedChoiceField(choices=PRODUCT_QUANTITY_CHOICES, coerce=int)
+    update = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput)

@@ -1,4 +1,4 @@
-{% load static%}
+{% load static %}
 <html>
 
 <head>
@@ -8,14 +8,25 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
-  <script src="https://js.stripe.com/v3/"></script>
   <link
     href="https://fonts.googleapis.com/css?family=Mansalva|Merienda|Pacifico|Satisfy|Grenze|Vibes|Open+Sans&display=swap"
     rel="stylesheet">
-  <meta charset="utf-8">
-  <!-- <title>Website</title> -->
+ 
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <style>
+    .well {
+      margin-top: 30px;
+      background: transparent;
+      border: none;
+    }
     #img1 {
       width: 100px;
       height: 80px;
@@ -43,37 +54,18 @@
       font-family: 'Times New Roman', Times, serif;
       margin-left: 407px;
     }
-  </style>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <style>
-    .boxed {
-      border: 1px solid black;
-      height: 25px;
-      width: 25px;
-    }
-
-    #oh {
-      width: 125px;
-    }
-
     .footer {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      padding: 20px;
-      background-color: #6b249b;
-      color: gray;
-      text-align: center;
-    }
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   padding: 20px;
+   background-color:#6b249b;
+   color: gray;
+   text-align: center;
+}
   </style>
+
 </head>
 
 <body>
@@ -89,9 +81,7 @@
           <a class="nav-link" id="p1" href="{% url 'profile' %}">Profile</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}" id="p1">Cart</a>
-        </li>
+        
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
         </li>
@@ -110,93 +100,196 @@
       </ul>
     </div>
   </nav>
-  <br>
-  <div class="container" style="font-family: 'Open Sans', sans-serif;">
-    <h2>Shopping Bag</h2>
+  <!-- <div class="container" style="font-family: 'Open Sans', sans-serif;">
+    <h2 style="color:#6b249b">Cart</h2>
     <div class="well well-small">
-      <hr class="soften" />
-      <table class="table table-bordered table-condensed">
-        <thead>
+     
+      <table class="table table-bordered ">
+        
           <tr>
-            <th>Category</th>
+            
             <th>Name</th>
             <th>Price</th>
-            <th>Qty </th>
-            <!--        <th>Total</th>-->
+            <th>Quantity </th>
+            <th>Total</th>
           </tr>
-        </thead>
-        <tbody>
+       
+          {% for cart in cartt %}
           <tr>
-            <td>Clothes</td>
-            <td>4JSTAR Women's Ruffle Moti Stone Anarkali Maxi Gown</td>
-            <td>Rs. 659</td>
+            
+            <td>{{cart.productname}}</td>
+            <td>{{cart.price}}</td>
             <td>
-              <div class="boxed">&nbsp;1
-
-              </div>
-
-              <!--<div class="input-append">
-                <button class="btn btn-mini" type="button">-</button>
-
-                <button class="btn btn-mini" type="button">+</button>
-                <button class="btn btn-mini btn-danger" type="button">Remove</button>
-                            <span class="icon-remove"></span>
-              </div>-->
+              
+              
+                <a name='increase'class="btn btn-sm btn-dark">+</a>
+                <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">
+                <a name='decrease' class="btn btn-sm btn-dark">-</a>
             </td>
-            <!--       <td>Rs. {{total}}-->
-            <!--        <div>-->
-            <!--          <button (click)="checkOut()">Pay</button>-->
-            <!--        </div>-->
-            <!--        </td>-->
+            
+              
+            <td>{{cart.total}}</td>
+          
+            
           </tr>
-        </tbody>
+          {% endfor %}
       </table>
-      <div>
-        <a href="{% url 'shipping'%}"><button type="button" class="btn btn-md" style="color: white;margin-top:-10px; background-color:#6b249b;">Checkout</button></a>
-
-        <!-- <button type="button" class="btn btn-md" id="checkout-button" style="color: white;margin-top:-10px; background-color:#6b249b;">Pay Online</button> -->
-        &nbsp;&nbsp;&nbsp;
-
-      </div>
+     
     </div>
   </div>
-
-  {% csrf_token %}
-</body>
-<script type="text/javascript">
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-  // Create an instance of the Stripe object with your publishable API key
-  var stripe = Stripe("pk_test_51IrKiWSD2MVKC9ogYQR4jUcnobRdFLSGX6Lt7zVUcInmAYdrqtHuxIYD3KpGZ7PMGPG5SJL6jz67Nieyv1ISBrYw00uAxTPSYZ");
-  var checkoutButton = document.getElementById("checkout-button");
   
-  checkoutButton.addEventListener("click", function () {
-    fetch("{% url 'create-checkout-session' product.id %}", {
-      method: "POST",
-      headers: {
-        'X-CSRFToken': csrftoken
-      }
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (session) {
-        return stripe.redirectToCheckout({ sessionId: session.id });
-      })
-      .then(function (result) {
-        // If redirectToCheckout fails due to a browser or network
-        // error, you should display the localized error message to your
-        // customer using error.message.
-        if (result.error) {
-          alert(result.error.message);
+  <div class="footer">© 2021 </span><span style="color: white; ">  CEBSShopping.com</span></div>
+  <script>
+    
+    $('.btn-number').click(function(e){
+        e.preventDefault();
+        
+        fieldName = $(this).attr('data-field');
+        type      = $(this).attr('data-type');
+        var input = $("input[name='"+fieldName+"']");
+        var currentVal = parseInt(input.val());
+        if (!isNaN(currentVal)) {
+            if(type == 'minus') {
+                
+                if(currentVal > input.attr('min')) {
+                    input.val(currentVal - 1).change();
+                } 
+                if(parseInt(input.val()) == input.attr('min')) {
+                    $(this).attr('disabled', true);
+                }
+    
+            } else if(type == 'plus') {
+    
+                if(currentVal < input.attr('max')) {
+                    input.val(currentVal + 1).change();
+                }
+                if(parseInt(input.val()) == input.attr('max')) {
+                    $(this).attr('disabled', true);
+                }
+    
+            }
+        } else {
+            input.val(0);
         }
-      })
-      .catch(function (error) {
-        console.error("Error:", error);
-      });
-  });
-</script>
-<div class="footer">© 2021 </span><span style="color: white; "> CEBSShopping.com</span></div>
+    });
+    $('.input-number').focusin(function(){
+       $(this).data('oldValue', $(this).val());
+    });
+    $('.input-number').change(function() {
+        
+        minValue =  parseInt($(this).attr('min'));
+        maxValue =  parseInt($(this).attr('max'));
+        valueCurrent = parseInt($(this).val());
+        
+        name = $(this).attr('name');
+        if(valueCurrent >= minValue) {
+            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the minimum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        if(valueCurrent <= maxValue) {
+            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the maximum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        
+        
+    });
+    $(".input-number").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                 // Allow: Ctrl+A
+                (e.keyCode == 65 && e.ctrlKey === true) || 
+                 // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                     // let it happen, don't do anything
+                     return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+      </script> -->
 
+
+
+
+
+
+
+
+      {% block content %}
+      <div class="container">
+          <div class="row" style="margin-top: 6%">
+          <h2>Your Shopping Cart
+              <span class="badge pull-right">
+                  {% with totail_items=cart|length %}
+                      {% if cart|length > 0 %}
+                          My Shopping Order:
+                          <a href="{% url 'cart_detail' %}" style="color: #ffffff">
+                              {{ totail_items }} item {{ totail_items|pluralize }}, Rs. {{ cart.get_total_price }}
+                          </a>
+                          {% else %}
+                          Your cart is empty.
+                      {% endif %}
+                  {% endwith %}
+              </span>
+          </h2>
+              <table class="table table-striped table-hover">
+                  <thead style="background-color: #5AC8FA">
+                      <tr>
+                          <th>Image</th>
+                          <th>Product</th>
+                          <th>Quantity</th>
+                          <th>Remove</th>
+                          <th>Unit Price</th>
+                          <th>Price</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% for item in cart %}
+                      {% with product=item.product  %}
+                          <tr>
+                              <td>
+                                  <img src="{{product.image}}" style="width: 100px;height: 100px;">
+                              </td>
+                              <td>{{ product.productname }}</td>
+                              <td>
+                                  <form action="{% url 'cart_add' id=product.id %}" method="post">
+                                      {% csrf_token %}
+                                      {{ item.update_quantity_form.quantity }}
+                                      {{ item.update_quantity_form.update }}
+                                      <input type="submit" value="Update" class="btn btn-info">
+                                  </form>
+                              </td>
+                              <td>
+                                  <a href="{% url 'cart_remove' id=product.id %}">Remove</a>
+                              </td>
+                              <td>Rs. {{ item.price }}</td>
+                              <td>Rs. {{ item.total_price }}</td>
+                          </tr>
+                      {% endwith %}
+                  {% endfor %}
+                  <tr style="background-color: #5AC8FA">
+                      <td><b>Total</b></td>
+                      <td colspan="4"></td>
+                      <td colspan="num"><b>Rs. {{ cart.get_total_price }}</b></td>
+                  </tr>
+                  </tbody>
+              </table>
+          <p class="text-right">
+              <a href="{% url 'home' %}" class="btn btn-default">Continue Shopping</a>
+              <a href="" class="btn btn-primary">Checkout</a>
+          </p>
+          </div>
+      </div>
+  {% endblock %}
+
+
+
+</body>
 
 </html>

@@ -74,7 +74,7 @@
       font-size: 18px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
-      margin-left: 407px;
+      margin-left: 400px;
     }
 
     ptr {
@@ -128,7 +128,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}" id="p1">Cart</a>
+          <a class="nav-link" href="{% url 'cart_detail' %}" id="p1">Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
@@ -232,6 +232,15 @@
     </div>
   </div>
 </div>-->
+
+
+
+
+
+
+
+
+
   <div class="row mx-3">
     <div class="card">
       <div class="w-10 m-4 my-2 d-flex flex-wrap">
@@ -239,16 +248,13 @@
           <div class="card-deck" id="border1">
             {% for product in productss %}
             <div class="mt-3 mx-auto" id="bord">
-              <a href="{% url 'viewdesc' id=product.id %}"><img class="card-img-top img-fluid styling"
+              <a href="{% url 'product_detail' id=product.id %}"><img class="card-img-top img-fluid styling"
                   style="margin-left: 20px; margin-top:10px; width:250px;height:250px;" src="{{product.image}}"></a>
               <div class="card-body">
                 <h5 class="card-title" id="txt">{{ product.productname }}</h5>
                 <p class="card-text"  id="txt">Rs. {{ product.price }}</p>
-                <a href="#" class="btn btn-md" id="btn1">Add To Cart</a>
+                <a href="{% url 'product_detail' id=product.id %}" class="btn btn-md" id="btn1">View</a>
                 <a href="{% url 'shipping' id=product.id %}" class="btn btm-md" id="btn1">Buy Now</a><br><br>
-                <!-- <button type="button" id="checkout-button">Checkout</button> -->
-
-
               </div>
             </div>
             {% endfor %}
@@ -260,6 +266,12 @@
     </div>
   </div>
 
+
+
+
+
+
+  
 </body>
 <div class="container-fluid" style="padding: 20px; background-color: #6b249b; font-family: 'Times New Roman', Times, serif;">
   <div style="text-align: center;"><span style="color: gray; ">© 2021 </span><span style="color: white; ">
