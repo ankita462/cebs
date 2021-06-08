@@ -25,6 +25,7 @@
       margin-top: -10px;
       margin-left: -10px;
     }
+
     ul li {
       padding-left: 20px;
       padding-top: 2px;
@@ -32,12 +33,14 @@
       padding-right: 20px;
 
     }
+
     #p1 {
       color: #6b249b;
       font-size: 15px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
     }
+
     #p2 {
       color: #6b249b;
       font-size: 18px;
@@ -45,17 +48,19 @@
       font-family: 'Times New Roman', Times, serif;
       margin-left: 398px;
     }
+
     .footer {
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   padding: 25px;
-   background-color:#6b249b;
-   color: gray;
-   text-align: center;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 25px;
+      background-color: #6b249b;
+      color: gray;
+      text-align: center;
     }
-   .form-area p {
+
+    .form-area p {
       margin: 0;
       padding: 0;
       font-weight: bold;
@@ -75,7 +80,6 @@
       height: 40px;
       color: #6b249b;
     }
-
   </style>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -99,16 +103,16 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}" id="p1">Cart</a>
+          <a class="nav-link" href="{% url 'cart_detail' %}" id="p1">Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
         </li>
 
-        <li class="nav-item" >
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" id="p1">Contact Us</a>
-        </li> 
-        <li class="nav-item" >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="p2">
             Hello!&nbsp;{{user.username}}</a>
         </li>
@@ -175,15 +179,16 @@
             {% for message in messages %}
             <p id="messages" style="color:green;">{{message}}</p>
             {% endfor %}
-            <button type="submit" class="btn btn-primary btn-md" style="background-color: #6b249b; color: white;">Edit & Save</button>
+            <button type="submit" class="btn btn-primary btn-md" style="background-color: #6b249b; color: white;">Edit &
+              Save</button>
           </form>
 
         </div>
       </div>
 
     </div>
-    <div class="footer">© 2021 </span><span style="color: white; ">  CEBSShopping.com</span></div>
-     
+    <div class="footer">© 2021 </span><span style="color: white; "> CEBSShopping.com</span></div>
+
 
 </body>
 

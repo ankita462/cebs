@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 
 # SESSION_SAVE_EVERY_REQUEST = True
 # Application definition
-CART_SESSION_ID='cart'
+CART_SESSION_ID = 'cart'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,7 +57,7 @@ ROOT_URLCONF = 'tryproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,10 +80,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ecommerce',
-        'USER':'root',
-        'PASSWORD':'ankita2805',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'USER': 'root',
+        'PASSWORD': 'ankita2805',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -106,10 +106,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL="tryapp.Account"
-AUTHENTICATION_BACKENDS=(
+AUTH_USER_MODEL = "tryapp.Account"
+AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
-#     'tryapp.backends.CaseSensitiveModelBackend'
+    #     'tryapp.backends.CaseSensitiveModelBackend'
 )
 
 # Internationalization
@@ -133,4 +133,4 @@ STATIC_URL = '/static/'
 
 STRIPE_PUBLIC_KEY = 'pk_test_51IrKiWSD2MVKC9ogYQR4jUcnobRdFLSGX6Lt7zVUcInmAYdrqtHuxIYD3KpGZ7PMGPG5SJL6jz67Nieyv1ISBrYw00uAxTPSYZ'
 
-STRIPE_PRIVATE_KEY= 'sk_test_51IrKiWSD2MVKC9ognJm86VtZbHHIgILNvMFwjpky6bFhP5NXr7kHv8fIELRrT1uYcaceFX7fyLf6StzQvgTwFyEH00NGcEqPhM'
+STRIPE_PRIVATE_KEY = 'sk_test_51IrKiWSD2MVKC9ognJm86VtZbHHIgILNvMFwjpky6bFhP5NXr7kHv8fIELRrT1uYcaceFX7fyLf6StzQvgTwFyEH00NGcEqPhM'

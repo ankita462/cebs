@@ -156,7 +156,7 @@
         {{field}}
       </p>
       {% endfor %}
-      
+
       <button type="submit" class="btn btn-lg btn-block"
         style="background-color: #6b249b;color:white;">Register</button>
       <br>
@@ -165,13 +165,13 @@
       <div>
         <a href="{% url 'login' %}" style="color: #6b249b;">Already have an account? Login
         </a>
-        
-    </div>
 
+      </div>
+      <div style="color:#6b249b;"> {{registration_form.errors}} </div>
     </form>
-    <div style="color: white;"> {{registeration_form.errors}} </div>
+
   </div>
-  
+
   <script>
     var form_fields = document.getElementsByTagName('input')
     form_fields[1].placeholder = 'example@gmail.com';

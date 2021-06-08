@@ -17,7 +17,6 @@ from django.contrib import messages
 from .cart import Cart
 from django.views.decorators.http import require_POST
 from .forms import CartAddProductForm
-
 import stripe
 
 # Create your views here.
@@ -41,7 +40,6 @@ def signup(request):
                     raw_password = form.cleaned_data.get('password1')
                     account = authenticate(email=email, password=raw_password)
                     login(request, account)
-                    # messages.success(request,'Account was created for '+username)
                     return redirect('login/')
                 else:
                     context['registration_form'] = form
@@ -59,7 +57,6 @@ def logout_view(request):
 def loginview(request, *args, **kwargs):
     context = {}
     user = request.user
-    print(user)
     if user.is_authenticated:
         return redirect('home/')
 
@@ -69,7 +66,6 @@ def loginview(request, *args, **kwargs):
             email = request.POST['email']
             password = request.POST['password']
             is_superuser = request.POST.get('is_superuser')
-            print(email, " ", password, " ", is_superuser)
             user = authenticate(email=email, password=password,
                                 is_superuser=is_superuser)
 
@@ -88,10 +84,164 @@ def loginview(request, *args, **kwargs):
     return render(request, 'tryapp/user/login.html', context)
 
 
+def products(request):
+    productss = Product.objects.all()
+    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+
+
+def clothes(request):
+    productss = Product.objects.filter(category='CLOTHES')
+    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+
+
+def electronics(request):
+    productss = Product.objects.filter(category='ELECTRONICS')
+    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+
+
+def books(request):
+    productss = Product.objects.filter(category='BOOKS')
+    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+
+
+def shoes(request):
+    productss = Product.objects.filter(category='SHOES')
+    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+
+
+@login_required(login_url='login')
+def contact(request):
+    return render(request, 'tryapp/user/contact.html')
+
+
 @login_required(login_url='login')
 def orderhistory(request):
-    orderss = Order.objects.filter(username=Account.objects.get(id=request.user.id).username)
+    orderss = Order.objects.filter(
+        username=Account.objects.get(id=request.user.id).username)
     return render(request, 'tryapp/user/orderhistory.html', {'orderss': orderss})
+
+
+def shipping(request, id):
+    context = {}
+    if request.method == 'POST':
+        if request.POST.get('address') and request.POST.get('phone') and request.POST.get('quantity'):
+            form = orderForm(request.POST)
+            if form.is_valid():
+                order = Order()
+                product1 = Product.objects.get(id=id)
+                quan = form.cleaned_data['quantity']
+                pri = product1.price*quan
+                stripe.api_key = settings.STRIPE_PRIVATE_KEY
+                try:
+                    charge = stripe.Charge.create(
+                        amount=int(pri) * 100,
+                        currency='INR',
+                        description='Cebs Product',
+                        source='tok_visa'
+                    )
+                    order = Order()
+                    product1 = Product.objects.get(id=id)
+                    order.productname = product1.productname
+                    order.phone = form.cleaned_data['phone']
+                    order.address = form.cleaned_data['address']
+                    order.quantity = quan
+                    order.username = Account.objects.get(
+                        id=request.user.id).username
+                    order.price = product1.price
+                    order.total = pri
+                    order.save()
+                    return redirect('home')
+                except Exception:
+                    messages.error(
+                        request, 'There was something wrong with the payment')
+
+            else:
+                context['order_form'] = form
+    else:
+        form = orderForm()
+    return render(request, 'tryapp/user/shipping.html', {'order_form': form, 'stripe_pub_key': settings.STRIPE_PUBLIC_KEY})
+
+
+@require_POST
+def cart_add(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    form = CartAddProductForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        cart.add(product=product,
+                 quantity=cd['quantity'], update_quantity=cd['update'])
+    return redirect('cart_detail')
+
+
+def cart_remove(request, id):
+    cart = Cart(request)
+    product = Product.objects.get(id=id)
+    cart.remove(product)
+    return redirect('cart_detail')
+
+
+def cart_detail(request):
+    cart = Cart(request)
+    for item in cart:
+        item['update_quantity_form'] = CartAddProductForm(
+            initial={'quantity': item['quantity'], 'update': True})
+    return render(request, 'tryapp/user/usercart.html', {'cart': cart})
+
+
+def product_list(request):
+    products = Product.objects.all()
+    context = {
+        'products': products
+    }
+    return render(request, 'tryapp/user/homepage.html', context)
+
+
+def product_detail(request, id):
+    product = Product.objects.get(pk=id)
+    cart_product_form = CartAddProductForm()
+    context = {
+        'product': product,
+        'cart_product_form': cart_product_form
+    }
+    return render(request, 'tryapp/user/view.html', context)
+
+
+def CheckOut(request):
+    address = request.POST.get('address')
+    phone = request.POST.get('phone')
+    username = Account.objects.get(id=request.user.id).username
+    form = CartAddProductForm(request.POST)
+    cart = request.session.get('cart')
+    x = list(cart.keys())
+    res = [int(i) for i in x]
+    length_list = len(res)
+    for a in range(length_list):
+        products = Product.getProductById(res[a])
+        for product in products:
+            h = cart.get(str(product.id))
+            qua = h['quantity']
+            total_p = h['price']
+            t = int(float(total_p))
+            tot = t*qua
+            order = Order(username=username,
+                          productname=product.productname,
+                          price=product.price,
+                          address=address,
+                          phone=phone,
+                          quantity=qua,
+                          total=tot,
+                          )
+            order.save()
+    request.session['cart'] = {}
+    return render(request, 'tryapp/user/usercart.html')
+
+# Admin Views
+
+@login_required(login_url='login')
+def viewproduct(request):
+    productss = Product.objects.all()
+    return render(request, 'tryapp/admin/viewproduct.html', {'productss': productss})
 
 
 @login_required(login_url='login')
@@ -108,15 +258,19 @@ def addproductform(request):
 
 
 @login_required(login_url='login')
-def viewproduct(request):
-    productss = Product.objects.all()
-    return render(request, 'tryapp/admin/viewproduct.html', {'productss': productss})
-
-
-@login_required(login_url='login')
 def vieworder(request):
     orderss = Order.objects.all()
-    return render(request, 'tryapp/admin/vieworder.html', {'orderss': orderss})
+    user = Account.objects.filter(is_superuser=False)
+    if request.method == "POST":
+
+        filter = request.POST['filter']
+
+        if(filter != "allUsers"):
+            orderss = Order.objects.all().filter(username=filter)
+
+    if not orderss:
+        messages.warning(request, "No Order Found")
+    return render(request, 'tryapp/admin/vieworder.html', {'orderss': orderss, 'users': user})
 
 
 @login_required(login_url='login')
@@ -129,11 +283,6 @@ def updateproduct(request, id):
         return render(request, 'tryapp/admin/viewproduct.html', {'productss': productss})
     context = {'form': form}
     return render(request, "tryapp/admin/updateproduct.html", context)
-
-
-@login_required(login_url='login')
-def adminprofile(request):
-    return render(request, 'tryapp/admin/adminprofile.html')
 
 
 @login_required(login_url='login')
@@ -171,46 +320,33 @@ def updateprofile_view(request):
     return render(request, 'tryapp/user/profile.html', context)
 
 
-def products(request):
-    productss = Product.objects.all()
-    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
+def allUsers(request):
+    if request.user.is_authenticated == False and request.user.is_superuser:
+        return redirect('login')
+
+    user = Account.objects.all().filter(is_superuser=False)
+
+    userList = user
+
+    if request.method == "POST":
+
+        filter = request.POST['filter']
+
+        if(filter != "allUsers"):
+            userList = Account.objects.all().filter(id=filter)
+
+    if not userList:
+        messages.warning(request, "No User Found")
+
+    return HttpResponse(render(request, 'tryapp/admin/viewuser.html', {'users': user, 'userList': userList}))
 
 
-def clothes(request):
-    productss = Product.objects.filter(category='CLOTHES')
-    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
-
-
-def electronics(request):
-    productss = Product.objects.filter(category='ELECTRONICS')
-    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
-
-
-def books(request):
-    productss = Product.objects.filter(category='BOOKS')
-    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
-
-
-def shoes(request):
-    productss = Product.objects.filter(category='SHOES')
-    return render(request, 'tryapp/user/homepage.html', {'productss': productss})
-
-
-# @login_required(login_url='login')
-# def viewdesc(request, id):
-#     product = Product.objects.get(pk=id)
-#     return render(request, 'tryapp/user/view.html', {'product': product})
-
-
-@login_required(login_url='login')
-def contact(request):
-    return render(request, 'tryapp/user/contact.html')
-
-
-@login_required(login_url='login')
-def viewuser(request):
-    userss = Account.objects.all()
-    return render(request, 'tryapp/admin/viewuser.html', {'userss': userss})
+def orderstatus(request, id):
+    if request.method == 'POST':
+        orderss = Order.objects.get(id=id)
+        orderss.status = True
+        orderss.save()
+    return redirect('order')
 
 
 def vclothes(request):
@@ -231,267 +367,3 @@ def vbooks(request):
 def vshoes(request):
     productss = Product.objects.filter(category='SHOES')
     return render(request, 'tryapp/admin/viewproduct.html', {'productss': productss})
-
-
-def shipping(request, id):
-    context = {}
-    if request.method == 'POST':
-        if request.POST.get('address') and request.POST.get('phone') and request.POST.get('quantity'):
-            form = orderForm(request.POST)
-            if form.is_valid():
-                order = Order()
-                product1 = Product.objects.get(id=id)
-                print(product1)
-                quan = form.cleaned_data['quantity']
-                print(quan)
-                pri = product1.price*quan
-                stripe.api_key = settings.STRIPE_PRIVATE_KEY
-                print(settings.STRIPE_PRIVATE_KEY)
-                try:
-                    print('hello')
-                    charge = stripe.Charge.create(
-                        amount=int(pri) * 100,
-                        currency='INR',
-                        description='Cebs Product',
-                        source='tok_visa'
-                    )
-                    order = Order()
-                    product1 = Product.objects.get(id=id)
-                    order.productname = product1.productname
-                    order.phone = form.cleaned_data['phone']
-                    order.address = form.cleaned_data['address']
-                    order.quantity = quan
-                    order.username = Account.objects.get(id=request.user.id).username
-                    order.price = product1.price
-                    order.total = pri
-                    order.save()
-                    print(order)
-                    return redirect('home')
-                except Exception:
-                    messages.error(
-                        request, 'There was something wrong with the payment')
-
-            else:
-                context['order_form'] = form
-    else:
-        form = orderForm()
-    return render(request, 'tryapp/user/shipping.html', {'order_form': form, 'stripe_pub_key': settings.STRIPE_PUBLIC_KEY})
-
-
-
-
-
-
-
-
-@require_POST
-def cart_add(request, id):
-    cart = Cart(request)
-    # product = get_object_or_404(Product, id=id)
-    product=Product.objects.get(id=id)
-    form = CartAddProductForm(request.POST)
-    if form.is_valid():
-        cd = form.cleaned_data
-        cart.add(product=product, quantity=cd['quantity'], update_quantity=cd['update'])
-    return redirect('cart_detail')
-
-
-def cart_remove(request,id):
-    cart = Cart(request)
-    product = Product.objects.get(id=id)
-    cart.remove(product)
-    return redirect('cart_detail')
-
-
-def cart_detail(request):
-    cart = Cart(request)
-    for item in cart:
-        item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'], 'update': True})
-    return render(request, 'tryapp/user/usercart.html', {'cart': cart})
-
-
-
-def product_list(request):
-    # category = None
-    # categories = Product.objects.all()
-    products = Product.objects.all()
-    # if category_slug:
-    #     category = get_object_or_404(Category, slug=category_slug)
-    #     products = Product.objects.filter(category=category)
-
-    context = {
-        'products': products
-    }
-    return render(request, 'tryapp/user/homepage.html', context)
-
-
-def product_detail(request, id):
-    # product = get_object_or_404(Product, id=id)
-    product=Product.objects.get(pk=id)
-    print(product)
-    cart_product_form = CartAddProductForm()
-    print(cart_product_form)
-    context = {
-        'product': product,
-        'cart_product_form': cart_product_form
-    }
-    return render(request, 'tryapp/user/view.html', context)
-
-
-def usercart(request):
-    return render(request,'tryapp/user/homepage.html')
-
-
-
-
-
-# @login_required(login_url='login')
-# def usercart(request):
-#     cartt=Cart.objects.filter(username=request.user.username)
-#     print(cartt)
-#     return render(request,'tryapp/user/usercart.html',{'cartt':cartt})
-
-# @login_required(login_url='login')
-# def usercarttt(request,id):
-#     # carttt=Cart.objects.filter(pk=id)
-#     product1={'product_id':id,'quantity':1}
-#     order=Cart()
-#     product1=Product.objects.get(id=id)
-#     print(product1)
-#     order.productname=product1.productname
-#     order.quantity=1
-#     order.username=Account.objects.get(id=request.user.id).username
-#     order.price=product1.price
-#     order.save()
-#     cartt=Cart.objects.filter(username=request.user.username)
-#     print(order)
-#     return render(request,'tryapp/user/usercart.html',{'cartt':cartt,'product':product1})
-
-
-
-
-
-# from apps.order.utilities import checkout, notify_customer, notify_vendor
-
-# def usercart(request):
-#     cart = Cart(request)
-
-#     if request.method == 'POST':
-#         form = CheckoutForm(request.POST)
-
-#         if form.is_valid():
-#             stripe.api_key = settings.STRIPE_SECRET_KEY
-
-#             stripe_token = form.cleaned_data['stripe_token']
-
-#             try:
-#                 charge = stripe.Charge.create(
-#                     amount=int(cart.get_total_cost() * 100),
-#                     currency='USD',
-#                     description='Charge from Interiorshop',
-#                     source=stripe_token
-#                 )
-
-#                 # first_name = form.cleaned_data['first_name']
-#                 # last_name = form.cleaned_data['last_name']
-#                 email = form.cleaned_data['email']
-#                 phone = form.cleaned_data['phone']
-#                 address = form.cleaned_data['address']
-#                 zipcode = form.cleaned_data['zipcode']
-#                 place = form.cleaned_data['place']
-
-#                 # order = checkout(request, email, address, zipcode, place, phone, cart.get_total_cost())
-
-#                 cart.clear()
-
-#                 # notify_customer(order)
-#                 # notify_vendor(order)
-
-#                 return redirect('success')
-#             except Exception:
-#                 messages.error(request, 'There was something wrong with the payment')
-#     else:
-#         form = CheckoutForm()
-
-#     remove_from_cart = request.GET.get('remove_from_cart', '')
-#     change_quantity = request.GET.get('change_quantity', '')
-#     quantity = request.GET.get('quantity', 0)
-
-#     if remove_from_cart:
-#         cart.remove(remove_from_cart)
-
-#         return redirect('cart')
-
-#     if change_quantity:
-#         cart.add(change_quantity, quantity, True)
-
-#         return redirect('cart')
-
-#     return render(request, 'tryapp/usercart.html', {'form': form, 'stripe_pub_key': settings.STRIPE_PUB_KEY})
-
-# def success(request):
-#     return render(request, 'cart/success.html')
-
-# stripe.api_key = settings.STRIPE_PRIVATE_KEY
-
-
-# class CreateCheckoutSessionView(View):
-#     def post(self, request, *args, **kwargs):
-#         product_id = self.kwargs["id"]
-#         print(request.POST.get('address'))
-#         product = Product.objects.get(id=product_id)
-#         YOUR_DOMAIN = "http://127.0.0.1:8000"
-#         checkout_session = stripe.checkout.Session.create(
-#             payment_method_types=['card'],
-#             line_items=[
-#                 {
-#                     'price_data': {
-#                         'currency': 'INR',
-#                         'unit_amount': int(product.price)*100,
-#                         'product_data': {
-#                             'name': 'Cebs Product'
-#                         },
-#                     },
-#                     'quantity': 1,
-#                 },
-#             ],
-#             metadata={
-#                 "product_id": product.id
-#             },
-#             mode='payment',
-#             success_url=YOUR_DOMAIN + '/tryapp/orderh/',
-#             cancel_url=YOUR_DOMAIN + '/tryapp/home/',
-#         )
-#         return JsonResponse({
-#             'id': checkout_session.id
-#         })
-
-
-# def shipping(request,id):
-#     context = {}
-#     if request.method == 'POST':
-#         if request.POST.get('address') and request.POST.get('phone') and request.POST.get('quantity'):
-#             form = orderForm(request.POST)
-#             if form.is_valid():
-#                 order=Order()
-#                 product1=Product.objects.get(id=id)
-#                 order.product=product1
-#                 order.phone=form.cleaned_data['phone']
-#                 order.address=form.cleaned_data['address']
-#                 order.quantity=form.cleaned_data['quantity']
-#                 order.username=Account.objects.get(id=request.user.id).username
-#                 order.price=product1.price
-#                 order.save()
-#                 return redirect('home/')
-#                 # print()
-#                 # context.update({
-#                 #         "product": product1,
-#                 #         "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
-#                 #     })
-#                 # return context
-#             else:
-#                 context['order_form'] = form
-#     else:
-#         form = orderForm()
-#         context['order_form']=form
-#         return render(request, 'tryapp/shipping.html', context)

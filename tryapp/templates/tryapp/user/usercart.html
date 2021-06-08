@@ -11,7 +11,7 @@
   <link
     href="https://fonts.googleapis.com/css?family=Mansalva|Merienda|Pacifico|Satisfy|Grenze|Vibes|Open+Sans&display=swap"
     rel="stylesheet">
- 
+
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -27,6 +27,7 @@
       background: transparent;
       border: none;
     }
+
     #img1 {
       width: 100px;
       height: 80px;
@@ -34,6 +35,7 @@
       margin-top: -10px;
       margin-left: -10px;
     }
+
     ul li {
       padding-left: 20px;
       padding-top: 2px;
@@ -41,12 +43,18 @@
       padding-right: 20px;
 
     }
+
     #p1 {
       color: #6b249b;
       font-size: 15px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
     }
+
+    .badge {
+      background-color: #6b249b;
+    }
+
     #p2 {
       color: #6b249b;
       font-size: 18px;
@@ -54,16 +62,17 @@
       font-family: 'Times New Roman', Times, serif;
       margin-left: 407px;
     }
+
     .footer {
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   padding: 20px;
-   background-color:#6b249b;
-   color: gray;
-   text-align: center;
-}
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 20px;
+      background-color: #6b249b;
+      color: gray;
+      text-align: center;
+    }
   </style>
 
 </head>
@@ -80,16 +89,18 @@
         <li class="nav-item">
           <a class="nav-link" id="p1" href="{% url 'profile' %}">Profile</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="p1" href="{% url 'cart_detail' %}">Cart</a>
+        </li>
 
-        
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
         </li>
 
-        <li class="nav-item" >
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" id="p1">Contact Us</a>
-        </li> 
-        <li class="nav-item" >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="p2">
             Hello!&nbsp;{{user.username}}</a>
         </li>
@@ -100,192 +111,117 @@
       </ul>
     </div>
   </nav>
-  <!-- <div class="container" style="font-family: 'Open Sans', sans-serif;">
-    <h2 style="color:#6b249b">Cart</h2>
-    <div class="well well-small">
-     
-      <table class="table table-bordered ">
-        
+  {% block content %}
+  <div class="container">
+    <div class="row" style="margin-top: 0%">
+
+      <span class="badge pull-right" style="margin-left:900px;">
+        {% with totail_items=cart|length %}
+        {% if cart|length > 0 %}
+        <p id="p9" style="color: #ffffff">My Shopping Order:
+          <a href="{% url 'cart_detail' %}" style="color: #ffffff">
+            {{ totail_items }} item {{ totail_items|pluralize }}, Rs. {{ cart.get_total_price }}
+          </a>
+        </p>
+        {% else %}
+        <p id="p9">Your cart is empty.</p>
+        {% endif %}
+        {% endwith %}
+      </span><br><br>
+
+      <table style="margin-top:1%;" class="table table-bordered table-hover">
+        <thead>
           <tr>
-            
-            <th>Name</th>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Remove</th>
+            <th>Unit Price</th>
             <th>Price</th>
-            <th>Quantity </th>
-            <th>Total</th>
           </tr>
-       
-          {% for cart in cartt %}
+        </thead>
+        <tbody>
+          {% for item in cart %}
+          {% with product=item.product %}
           <tr>
-            
-            <td>{{cart.productname}}</td>
-            <td>{{cart.price}}</td>
             <td>
-              
-              
-                <a name='increase'class="btn btn-sm btn-dark">+</a>
-                <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">
-                <a name='decrease' class="btn btn-sm btn-dark">-</a>
+              <img src="{{product.image}}" style="width: 100px;height: 100px;">
             </td>
-            
-              
-            <td>{{cart.total}}</td>
-          
-            
+            <td>{{ product.productname }}</td>
+            <td>
+              <form action="{% url 'cart_add' id=product.id %}" method="post">
+                {% csrf_token %}
+                {{ item.update_quantity_form.quantity }}
+                {{ item.update_quantity_form.update }}
+                <input type="submit" value="Update" class="btn btn-md" style="background-color: #6b249b;color:white;">
+              </form>
+            </td>
+            <td>
+              <button class="btn btn-md" style="background-color: #6b249b;color:white;"><a
+                  href="{% url 'cart_remove' id=product.id %}" style="text-decoration: none;color:white;"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                  </svg></a>
+              </button>
+            </td>
+            <td>Rs. {{ item.price }}</td>
+            <td>Rs. {{ item.total_price }}</td>
           </tr>
+          {% endwith %}
           {% endfor %}
+          <tr>
+            <td colspan="5" style="border: none;"></td>
+            <td colspan="num" style="border: none;"><b>Total Rs. {{ cart.get_total_price }}</b></td>
+          </tr>
+        </tbody>
       </table>
-     
+      <p class="text-right">
+        <a href="{% url 'home' %}" class="btn btn-default" style="background-color: #6b249b;color:white;">Continue
+          Shopping</a>
+        <a href="#" data-toggle="modal" style="background-color: #6b249b;color:white;" data-target="#exampleModal"
+          class="btn btn-md">Check out</a>
+      </p>
+
     </div>
   </div>
+
+  </div>
+  </div>
+
   
-  <div class="footer">© 2021 </span><span style="color: white; ">  CEBSShopping.com</span></div>
-  <script>
-    
-    $('.btn-number').click(function(e){
-        e.preventDefault();
-        
-        fieldName = $(this).attr('data-field');
-        type      = $(this).attr('data-type');
-        var input = $("input[name='"+fieldName+"']");
-        var currentVal = parseInt(input.val());
-        if (!isNaN(currentVal)) {
-            if(type == 'minus') {
-                
-                if(currentVal > input.attr('min')) {
-                    input.val(currentVal - 1).change();
-                } 
-                if(parseInt(input.val()) == input.attr('min')) {
-                    $(this).attr('disabled', true);
-                }
-    
-            } else if(type == 'plus') {
-    
-                if(currentVal < input.attr('max')) {
-                    input.val(currentVal + 1).change();
-                }
-                if(parseInt(input.val()) == input.attr('max')) {
-                    $(this).attr('disabled', true);
-                }
-    
-            }
-        } else {
-            input.val(0);
-        }
-    });
-    $('.input-number').focusin(function(){
-       $(this).data('oldValue', $(this).val());
-    });
-    $('.input-number').change(function() {
-        
-        minValue =  parseInt($(this).attr('min'));
-        maxValue =  parseInt($(this).attr('max'));
-        valueCurrent = parseInt($(this).val());
-        
-        name = $(this).attr('name');
-        if(valueCurrent >= minValue) {
-            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
-        } else {
-            alert('Sorry, the minimum value was reached');
-            $(this).val($(this).data('oldValue'));
-        }
-        if(valueCurrent <= maxValue) {
-            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
-        } else {
-            alert('Sorry, the maximum value was reached');
-            $(this).val($(this).data('oldValue'));
-        }
-        
-        
-    });
-    $(".input-number").keydown(function (e) {
-            // Allow: backspace, delete, tab, escape, enter and .
-            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
-                 // Allow: Ctrl+A
-                (e.keyCode == 65 && e.ctrlKey === true) || 
-                 // Allow: home, end, left, right
-                (e.keyCode >= 35 && e.keyCode <= 39)) {
-                     // let it happen, don't do anything
-                     return;
-            }
-            // Ensure that it is a number and stop the keypress
-            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                e.preventDefault();
-            }
-        });
-      </script> -->
-
-
-
-
-
-
-
-
-      {% block content %}
-      <div class="container">
-          <div class="row" style="margin-top: 6%">
-          <h2>Your Shopping Cart
-              <span class="badge pull-right">
-                  {% with totail_items=cart|length %}
-                      {% if cart|length > 0 %}
-                          My Shopping Order:
-                          <a href="{% url 'cart_detail' %}" style="color: #ffffff">
-                              {{ totail_items }} item {{ totail_items|pluralize }}, Rs. {{ cart.get_total_price }}
-                          </a>
-                          {% else %}
-                          Your cart is empty.
-                      {% endif %}
-                  {% endwith %}
-              </span>
-          </h2>
-              <table class="table table-striped table-hover">
-                  <thead style="background-color: #5AC8FA">
-                      <tr>
-                          <th>Image</th>
-                          <th>Product</th>
-                          <th>Quantity</th>
-                          <th>Remove</th>
-                          <th>Unit Price</th>
-                          <th>Price</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  {% for item in cart %}
-                      {% with product=item.product  %}
-                          <tr>
-                              <td>
-                                  <img src="{{product.image}}" style="width: 100px;height: 100px;">
-                              </td>
-                              <td>{{ product.productname }}</td>
-                              <td>
-                                  <form action="{% url 'cart_add' id=product.id %}" method="post">
-                                      {% csrf_token %}
-                                      {{ item.update_quantity_form.quantity }}
-                                      {{ item.update_quantity_form.update }}
-                                      <input type="submit" value="Update" class="btn btn-info">
-                                  </form>
-                              </td>
-                              <td>
-                                  <a href="{% url 'cart_remove' id=product.id %}">Remove</a>
-                              </td>
-                              <td>Rs. {{ item.price }}</td>
-                              <td>Rs. {{ item.total_price }}</td>
-                          </tr>
-                      {% endwith %}
-                  {% endfor %}
-                  <tr style="background-color: #5AC8FA">
-                      <td><b>Total</b></td>
-                      <td colspan="4"></td>
-                      <td colspan="num"><b>Rs. {{ cart.get_total_price }}</b></td>
-                  </tr>
-                  </tbody>
-              </table>
-          <p class="text-right">
-              <a href="{% url 'home' %}" class="btn btn-default">Continue Shopping</a>
-              <a href="" class="btn btn-primary">Checkout</a>
-          </p>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Check Out Form</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="m-2 p-3">
+            <form action="{% url 'checkout' %} " method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="">Address</label>
+                <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
+              </div>
+              <div class="form-group">
+                <label for="">Phone</label>
+                <input type="text" name="phone" id="" class="form-control" placeholder="" aria-describedby="helpId">
+              </div>
+              <input type="submit" class="btn btn-outline-info col-lg-6" style="background-color: #6b249b;color:white;"
+                value="Place Order">
+            </form>
           </div>
+        </div>
+
       </div>
+    </div>
+  </div>
   {% endblock %}
 
 

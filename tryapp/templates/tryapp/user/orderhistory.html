@@ -11,7 +11,7 @@
   <link
     href="https://fonts.googleapis.com/css?family=Mansalva|Merienda|Pacifico|Satisfy|Grenze|Vibes|Open+Sans&display=swap"
     rel="stylesheet">
- 
+
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <style>
@@ -20,6 +20,7 @@
       background: transparent;
       border: none;
     }
+
     #img1 {
       width: 100px;
       height: 80px;
@@ -27,6 +28,7 @@
       margin-top: -10px;
       margin-left: -10px;
     }
+
     ul li {
       padding-left: 20px;
       padding-top: 2px;
@@ -34,12 +36,14 @@
       padding-right: 20px;
 
     }
+
     #p1 {
       color: #6b249b;
       font-size: 15px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
     }
+
     #p2 {
       color: #6b249b;
       font-size: 18px;
@@ -47,16 +51,17 @@
       font-family: 'Times New Roman', Times, serif;
       margin-left: 398px;
     }
+
     .footer {
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   padding: 20px;
-   background-color:#6b249b;
-   color: gray;
-   text-align: center;
-}
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 20px;
+      background-color: #6b249b;
+      color: gray;
+      text-align: center;
+    }
   </style>
 
 </head>
@@ -75,16 +80,16 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}" id="p1">Cart</a>
+          <a class="nav-link" href="{% url 'cart_detail' %}" id="p1">Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
         </li>
 
-        <li class="nav-item" >
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" id="p1">Contact Us</a>
-        </li> 
-        <li class="nav-item" >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="p2">
             Hello!&nbsp;{{user.username}}</a>
         </li>
@@ -96,13 +101,12 @@
     </div>
   </nav>
   <div class="container" style="font-family: 'Open Sans', sans-serif;">
-    <!-- <h2 style="color:#6b249b">Order History</h2> -->
     <div class="well well-small">
-     
+
       <table class="table table-bordered ">
         <thead>
           <tr>
-            
+
             <th>Name</th>
             <th>Price</th>
             <th>Quantity </th>
@@ -113,25 +117,25 @@
         <tbody>
           {% for order in orderss %}
           <tr>
-            
+
             <td>{{order.productname}}</td>
             <td>{{order.price}}</td>
             <td>{{order.quantity}}</td>
             <td>{{order.total}}</td>
             {% if order.status %}
-                    <th><span class="badge badge-success">Completed</span></th>
-                    {% else %}
-                    <th><span class="badge badge-warning">Pending</span></th>
+            <th><span class="badge badge-success">Completed</span></th>
+            {% else %}
+            <th><span class="badge badge-warning">Pending</span></th>
             {% endif %}
-           
+
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
-  <div class="footer">© 2021 </span><span style="color: white; ">  CEBSShopping.com</span></div>
-     
+  <div class="footer">© 2021 </span><span style="color: white; "> CEBSShopping.com</span></div>
+
 </body>
 
 </html>

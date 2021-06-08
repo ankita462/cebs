@@ -33,7 +33,7 @@
     .bor {
       height: 390px;
       width: 170px;
-    } 
+    }
 
     .stylingg {
       display: block;
@@ -49,6 +49,7 @@
       height: 200px;
       width: 160px;
     }
+
     #img1 {
       width: 100px;
       height: 80px;
@@ -56,6 +57,7 @@
       margin-top: -10px;
       margin-left: -10px;
     }
+
     ul li {
       padding-left: 20px;
       padding-top: 2px;
@@ -63,12 +65,14 @@
       padding-right: 20px;
 
     }
+
     #p1 {
       color: #6b249b;
       font-size: 15px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
     }
+
     #p2 {
       color: #6b249b;
       font-size: 18px;
@@ -80,17 +84,19 @@
     ptr {
       cursor: pointer;
     }
+
     #p3 {
-      color:white;
+      color: white;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
       font-size: medium;
       margin-left: -30px;
       padding-right: 20px;
     }
+
     #btn1 {
       background-color: #6b249b;
-      color:white;
+      color: white;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
       font-size: 15px;
@@ -98,26 +104,25 @@
       margin-left: 0px;
       margin-right: 5px;
     }
+
     #txt {
       margin-left: 0px;
       font-size: 15px;
       font-weight: bold;
       font-family: 'Times New Roman', Times, serif;
     }
+
     #bord {
       border: #6b249b solid 0.5px;
-      height:400px;
-      width:420px;
-      padding:5px;
+      height: 400px;
+      width: 420px;
+      padding: 5px;
     }
-    
-    
   </style>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="font-family: 'Open Sans', sans-serif;">
     <a href="{% url 'home' %}"><img id="img1" src="{% static 'tryapp/img/logo.jpeg' %}" alt="cebs"></a>
-
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
@@ -126,22 +131,19 @@
         <li class="nav-item">
           <a class="nav-link" id="p1" href="{% url 'profile' %}">Profile</a>
         </li>
-
         <li class="nav-item">
           <a class="nav-link" href="{% url 'cart_detail' %}" id="p1">Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orderh' %}" id="p1">Order History</a>
         </li>
-
-        <li class="nav-item" >
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" id="p1">Contact Us</a>
-        </li> 
-        <li class="nav-item" >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="p2">
             Hello!&nbsp;{{user.username}}</a>
         </li>
-
         <li class="nav-item">
           <a class="nav-link" id="p1" href="{% url 'logout' %}">Logout</a>
         </li>
@@ -190,7 +192,8 @@
 
 
   <br>
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="height:45px; margin-top:-20px; background-color:#6b249b;  font-family: 'Open Sans', sans-serif;">
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top"
+    style="height:45px; margin-top:-20px; background-color:#6b249b;  font-family: 'Open Sans', sans-serif;">
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
 
@@ -210,37 +213,6 @@
     </div>
   </nav>
 
-  <!--<div class="row mx-0">
-  <div class="col-sm-3 p-2" style="font-family: 'Open Sans', sans-serif;">
-    <div class="card p-3">
-      <h4 >Price Range</h4>
-      <hr>
-      <form>
-        <div class="radio ">
-          <label><input type="radio">&nbsp;0-499</label>
-        </div>
-        <div class="radio ">
-          <label><input type="radio" >&nbsp;500-999</label>
-        </div>
-        <div class="radio ">
-          <label><input type="radio" >&nbsp;1000-2999</label>
-        </div>
-        <div class="radio ">
-          <label><input type="radio">&nbsp;3000 & above</label>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>-->
-
-
-
-
-
-
-
-
-
   <div class="row mx-3">
     <div class="card">
       <div class="w-10 m-4 my-2 d-flex flex-wrap">
@@ -252,7 +224,7 @@
                   style="margin-left: 20px; margin-top:10px; width:250px;height:250px;" src="{{product.image}}"></a>
               <div class="card-body">
                 <h5 class="card-title" id="txt">{{ product.productname }}</h5>
-                <p class="card-text"  id="txt">Rs. {{ product.price }}</p>
+                <p class="card-text" id="txt">Rs. {{ product.price }}</p>
                 <a href="{% url 'product_detail' id=product.id %}" class="btn btn-md" id="btn1">View</a>
                 <a href="{% url 'shipping' id=product.id %}" class="btn btm-md" id="btn1">Buy Now</a><br><br>
               </div>
@@ -271,9 +243,10 @@
 
 
 
-  
+
 </body>
-<div class="container-fluid" style="padding: 20px; background-color: #6b249b; font-family: 'Times New Roman', Times, serif;">
+<div class="container-fluid"
+  style="padding: 20px; background-color: #6b249b; font-family: 'Times New Roman', Times, serif;">
   <div style="text-align: center;"><span style="color: gray; ">© 2021 </span><span style="color: white; ">
       CEBSShopping.com</span></div>
 </div>
