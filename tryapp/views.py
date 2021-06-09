@@ -224,7 +224,15 @@ def CheckOut(request):
             total_p = h['price']
             t = int(float(total_p))
             tot = t*qua
-            order = Order(username=username,
+            stripe.api_key = settings.STRIPE_PRIVATE_KEY
+            try:
+                charge = stripe.Charge.create(
+                        amount=int(tot) * 100,
+                        currency='INR',
+                        description='Cebs Product',
+                        source='tok_visa'
+                    )
+                order = Order(username=username,
                           productname=product.productname,
                           price=product.price,
                           address=address,
@@ -232,7 +240,10 @@ def CheckOut(request):
                           quantity=qua,
                           total=tot,
                           )
-            order.save()
+                order.save()
+                redirect('checkout')
+            except Exception:
+                    messages.error(request, 'There was something wrong with the payment')
     request.session['cart'] = {}
     return render(request, 'tryapp/user/usercart.html')
 
